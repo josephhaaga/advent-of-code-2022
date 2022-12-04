@@ -27,9 +27,21 @@ def main() -> int:
         except KeyError:
             continue
         priority = calculate_priority(duplicate_item)
-        print(priority)
         total += priority
     # part 1
+    print(total)
+
+    n = 3
+    total = 0
+    groups = [lines[i:i+n] for i in range(0, len(lines), n)]
+    for group in groups:
+        sets = [set(a) for a in group]
+        try:
+            badge = sets[0].intersection(*sets[1:]).pop()
+        except KeyError:
+            continue
+        total += calculate_priority(badge)
+    # part 2
     print(total)
     return 0
 
