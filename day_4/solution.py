@@ -6,12 +6,18 @@ def does_fully_overlap(a: Tuple[int], b: Tuple[int]) -> bool:
         return True
     return False
 
+def does_overlap(a: Tuple[int], b: Tuple[int]) -> bool:
+    if b[0] <= a[1] and a[0] <= b[1]:
+        return True
+    return False
+
 
 def main() -> int:
     with open('input.txt', 'r') as f:
         lines = f.read().split("\n")
     # part 1
-    total = 0
+    fully_overlaps = 0
+    partially_overlaps = 0
     lines_processed = 0
     for line in lines:
         try:
@@ -19,15 +25,14 @@ def main() -> int:
         except ValueError:
             continue
         try:
-            overlaps: bool = does_fully_overlap(tuples[0], tuples[1])
+            fully_overlaps += 1 if does_fully_overlap(tuples[0], tuples[1]) else 0
+            partially_overlaps += 1 if does_overlap(tuples[0], tuples[1]) else 0
         except IndexError:
             continue
-        if overlaps:
-            total += 1
         lines_processed += 1
-        # increment total if overlaps
     print(f"Total lines: {lines_processed}")
-    print(f"Overlaps: {total}")
+    print(f"Full Overlaps: {fully_overlaps}")
+    print(f"Partial Overlaps: {partially_overlaps}")
     return 0
 
 

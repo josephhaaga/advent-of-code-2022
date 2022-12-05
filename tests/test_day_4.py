@@ -1,5 +1,6 @@
 import pytest
 
+from day_4.solution import does_overlap
 from day_4.solution import does_fully_overlap
 
 @pytest.mark.parametrize('a, b, fully_overlaps', [
@@ -13,4 +14,17 @@ from day_4.solution import does_fully_overlap
 ])
 def test_does_fully_overlap(a, b, fully_overlaps):
     assert does_fully_overlap(a, b) == fully_overlaps
+
+
+@pytest.mark.parametrize('a, b, overlaps', [
+    ((1, 3), (2, 2), True),
+    ((1, 3), (4, 6), False),
+    ((1, 3), (0, 4), True),
+    ((0, 4), (1, 3), True),
+    ((4, 6), (1, 3), False),
+    ((1, 3), (2, 4), True),
+    ((2, 4), (1, 3), True),
+])
+def test_does_overlap(a, b, overlaps):
+    assert does_overlap(a, b) == overlaps
 
