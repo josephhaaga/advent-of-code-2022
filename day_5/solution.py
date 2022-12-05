@@ -55,19 +55,45 @@ def run_instructions(stacks: List[Stack], instructions: List[Instruction]) -> Li
     return stacks
 
 
+def run_instructions_cratemover_9001(stacks: List[Stack], instructions: List[Instruction]) -> List[Stack]:
+    for instruction in instructions:
+        amount, src, dest = instruction
+        src, dest = src - 1, dest - 1 # zero-indexed lists
+        try:
+            to_move = stacks[src][-1*amount:]
+            stacks[dest] += to_move
+            stacks[src] = stacks[src][:-1*amount]
+        except IndexError:
+            breakpoint()
+            print("index error!")
+            continue
+    return stacks
+
+
+
 def get_items_on_top_of_each_stack(stacks: List[Stack]) -> str:
     answer = ''
     for stack in stacks:
-        answer += stack.pop(-1)
+        try:
+            answer += stack.pop(-1)
+        except IndexError:
+            answer += " "
     return answer
 # output the results
 
 
 def main() -> int:
     stacks, instructions = parse_input("input.txt")
-    result = run_instructions(stacks, instructions)
     # part 1
+    result = run_instructions(stacks, instructions)
     print(get_items_on_top_of_each_stack(result))
+
+    # part 2
+    stacks, instructions = parse_input("input.txt")
+    # reset the `stack` object, which was mutated by `run_instructions()`
+    result = run_instructions_cratemover_9001(stacks, instructions)
+    print(get_items_on_top_of_each_stack(result))
+
     return 0
 
 
