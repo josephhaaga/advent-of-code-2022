@@ -28,7 +28,7 @@ $ ls
 """
 
 def test_construct_file_system():
-    expected = Directory('/', [
+    expected = Directory('', [
         File("b.txt", 14848514),
         File("c.dat", 8504156)
     ], [
@@ -48,4 +48,4 @@ def test_construct_file_system():
             File("k", 7214296),
         ], []),
     ])
-    assert construct_file_system(inp) == expected
+    assert construct_file_system(inp)['/'] == expected
