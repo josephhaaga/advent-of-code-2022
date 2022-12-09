@@ -2,11 +2,32 @@ from typing import List
 import sys
 
 
-def get_max_possible_scenic_score(matrix: List[List[int]]):
-    """Determine the max possible scenic score of any tree in the matrix."""
-    center_x, center_y = len(matrix[0]) // 2, len(matrix) // 2
-    corner_x, corner_y = len(matrix[0]) - 1, len(matrix) - 1
-    return max((center_x * center_x * center_y * center_y), (corner_x * corner_y))
+def get_scenic_score(matrix: List[List[int]], x: int, y: int):
+    """Determine the scenic score of a tree in the matrix."""
+    if x == 0 or y == 0 or x == len(matrix[0]) - 1 or y == len(matrix) - 1:
+        return 0
+
+    t_x = x
+    while x > 0 and 
+
+    n, s, e, w = 1, 1, 1, 1
+    for t_x in range(x, -1, -1):
+        if matrix[y][t_x] >= matrix[y][x]:
+            break
+        w += 1
+    for t_x in range(x, len(matrix[0]), 1):
+        if matrix[y][t_x] >= matrix[y][x]:
+            break
+        e += 1
+    for t_y in range(y, -1, -1):
+        if matrix[t_y][x] >= matrix[y][x]:
+            break
+        n += 1
+    for t_y in range(y, len(matrix), 1):
+        if matrix[t_y][x] >= matrix[y][x]:
+            break
+        s += 1
+    return n * s * w * e
 
 
 def is_tree_visible(matrix: List[List[int]], x: int, y: int):
@@ -66,13 +87,15 @@ def main() -> int:
 
     # iterate thru matrix in all four directions
     visible_trees = 0
+    highest_scenic = 0
     for y in range(0, len(matrix)):
         for x in range(0, len(matrix[0])):
             visible_trees += 1 if is_tree_visible(matrix, x, y) else 0
+            highest_scenic = max(highest_scenic, get_scenic_score(matrix, x, y))
+            print(highest_scenic)
 
-    largest_view_distance = get_max_possible_scenic_score(matrix)
     print(visible_trees)
-    print(largest_view_distance)
+    print(highest_scenic)
     return 0
 
 
