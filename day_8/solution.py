@@ -4,30 +4,19 @@ import sys
 
 def get_scenic_score(matrix: List[List[int]], x: int, y: int):
     """Determine the scenic score of a tree in the matrix."""
-    if x == 0 or y == 0 or x == len(matrix[0]) - 1 or y == len(matrix) - 1:
-        return 0
+    l, r = x - 1, x + 1
+    while matrix[y][l] < matrix[y][x] or matrix[y][r] < matrix[y][x]:
+        l -= 1 if matrix[y][l] < matrix[y][x] else 0
+        r += 1 if matrix[y][r] < matrix[y][x] else 0
+    u, d = y - 1, y + 1
+    while matrix[u][x] < matrix[y][x] or matrix[d][x] < matrix[y][x]:
+        u -= 1 if matrix[u][x] < matrix[y][x] else 0
+        d += 1 if matrix[d][x] < matrix[y][x] else 0
+    breakpoint()
+    return (
+        (x-l) * (r-x) * (y-u) * (d-y)
+    )
 
-    t_x = x
-    while x > 0 and 
-
-    n, s, e, w = 1, 1, 1, 1
-    for t_x in range(x, -1, -1):
-        if matrix[y][t_x] >= matrix[y][x]:
-            break
-        w += 1
-    for t_x in range(x, len(matrix[0]), 1):
-        if matrix[y][t_x] >= matrix[y][x]:
-            break
-        e += 1
-    for t_y in range(y, -1, -1):
-        if matrix[t_y][x] >= matrix[y][x]:
-            break
-        n += 1
-    for t_y in range(y, len(matrix), 1):
-        if matrix[t_y][x] >= matrix[y][x]:
-            break
-        s += 1
-    return n * s * w * e
 
 
 def is_tree_visible(matrix: List[List[int]], x: int, y: int):
