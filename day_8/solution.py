@@ -1,22 +1,45 @@
+import math
+from typing import Dict
 from typing import List
 import sys
 
 
-def get_scenic_score(matrix: List[List[int]], x: int, y: int):
-    """Determine the scenic score of a tree in the matrix."""
-    l, r = x - 1, x + 1
-    while matrix[y][l] < matrix[y][x] or matrix[y][r] < matrix[y][x]:
-        l -= 1 if matrix[y][l] < matrix[y][x] else 0
-        r += 1 if matrix[y][r] < matrix[y][x] else 0
-    u, d = y - 1, y + 1
-    while matrix[u][x] < matrix[y][x] or matrix[d][x] < matrix[y][x]:
-        u -= 1 if matrix[u][x] < matrix[y][x] else 0
-        d += 1 if matrix[d][x] < matrix[y][x] else 0
-    breakpoint()
-    return (
-        (x-l) * (r-x) * (y-u) * (d-y)
-    )
+def get_view_distances(matrix: List[List[int]], x: int, y: int) -> Dict[str, int]:
+    """Get view distances of a tree in the matrix."""
+    distances = {
+        "n": 0,
+        "s": 0,
+        "e": 0,
+        "w": 0
+    }
+    # check number is in range
+    # check height
+    for n in range(y-1, -1, -1):
+        distances['n'] += 1
+        if matrix[n][x] >= matrix[y][x]:
+            break
 
+    for s in range(y+1, len(matrix), 1):
+        distances['s'] += 1
+        if matrix[s][x] >= matrix[y][x]:
+            break
+
+    for e in range(x+1, len(matrix[0]), 1):
+        distances['e'] += 1
+        if matrix[y][e] >= matrix[y][x]:
+            break
+
+    for w in range(x-1, -1, -1):
+        distances['w'] += 1
+        if matrix[y][w] >= matrix[y][x]:
+            break
+
+    return distances
+
+
+def get_scenic_score(matrix: List[List[int]], x: int, y: int):
+    """Calculate scenic score of a tree."""
+    return math.prod(get_view_distances(matrix, x, y).values())
 
 
 def is_tree_visible(matrix: List[List[int]], x: int, y: int):
@@ -66,9 +89,6 @@ def is_tree_visible(matrix: List[List[int]], x: int, y: int):
     return False
 
 
-
-
-
 def main() -> int:
     input_path = sys.argv[1]
     with open(input_path, 'r') as f:
@@ -80,9 +100,11 @@ def main() -> int:
     for y in range(0, len(matrix)):
         for x in range(0, len(matrix[0])):
             visible_trees += 1 if is_tree_visible(matrix, x, y) else 0
-            highest_scenic = max(highest_scenic, get_scenic_score(matrix, x, y))
-            print(highest_scenic)
-
+            scenic_score = get_scenic_score(matrix, x, y)
+            if scenic_score > highest_scenic:
+                highest_scenic = scenic_score
+                highest_x, highest_y = x, y
+                details = get_view_distances(matrix, x, y)
     print(visible_trees)
     print(highest_scenic)
     return 0
