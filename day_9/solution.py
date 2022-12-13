@@ -52,8 +52,7 @@ def main() -> int:
     with open(sys.argv[1], "r") as f:
         instructions = f.read()
     # Part 1
-    head = Location(20, 20)
-    tail = Location(20, 20)
+    head, tail = Location(20, 20), Location(20, 20)
     tail_locations = [tail]
     for line in instructions.split("\n")[:-1]:
         moves: List[Move] = instruction_to_moves(line)
@@ -64,7 +63,20 @@ def main() -> int:
             tail_locations += [tail]
     answer = len(set(tail_locations))
     print(answer)
-    assert answer == 6037
+
+    # Part 2
+    knots = [Location(20, 20) for _ in range(10)]
+    tail_locations = [knots[-1]]
+    for line in instructions.split("\n")[:-1]:
+        moves: List[Move] = instruction_to_moves(line)
+        for move in moves:
+            knots[0]: Location = update_location(knots[0], move)
+            for knot_idx in range(1, len(knots)):
+                m: Move = get_best_move(knots[knot_idx], knots[knot_idx - 1])
+                knots[knot_idx]: Location = update_location(knots[knot_idx], m)
+            tail_locations += [knots[-1]]
+    answer = len(set(tail_locations))
+    print(answer)
 
     return 0
 
