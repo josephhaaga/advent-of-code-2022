@@ -43,6 +43,7 @@ def instruction_to_moves(instruction: str) -> List[Move]:
 def calculate_distance(a: Location, b: Location) -> Distance:
     """Calculate the [x, y] distance between `a` and `b`."""
     return Distance(b.x-a.x, b.y-a.y)
+# TODO: Consolidate this function into get_best_move(head, tail), and delete the Distance namedtuple
 
 
 def get_best_move(tail: Location, distance: Distance) -> Move:
@@ -71,7 +72,6 @@ def main() -> int:
     tail_locations = []
     head = Location(20, 20)
     tail = Location(20, 20)
-    tail_locations += [tail]
     for line in instructions.split("\n")[:-1]:
         moves: List[Move] = instruction_to_moves(line)
         for move in moves:
