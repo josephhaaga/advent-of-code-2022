@@ -5,27 +5,15 @@ from typing import Optional
 from typing import Tuple
 
 
-Distance = namedtuple("Distance", "x y")
-Move = namedtuple("Move", "x y")
+Move = namedtuple("Move", "dx dy")
 Location = namedtuple("Location", "x y")
-
-
-def get_board_size(instructions: str) -> int:
-    return max([int(line.split(" ")[1]) for line in instructions.split("\n")[:-1]])
-
-
-def print_board(board_size: int, head_location: Optional[Location] = None) -> None:
-    for y_idx in range(board_size):
-        for x_idx in range(board_size):
-            print("." if (x_idx, y_idx) != head_location else "H", end=" ")
-        print()
 
 
 def update_location(
     location: Location,
     move: Move,
 ) -> Location:
-    return Location(location.x + move.x, location.y + move.y)
+    return Location(location.x + move.dx, location.y + move.dy)
 
 
 def instruction_to_moves(instruction: str) -> List[Move]:
@@ -40,15 +28,12 @@ def instruction_to_moves(instruction: str) -> List[Move]:
     return [Move(*dirs[direction]) for _ in range(distance)]
 
 
-def calculate_distance(a: Location, b: Location) -> Distance:
-    """Calculate the [x, y] distance between `a` and `b`."""
-    return Distance(b.x-a.x, b.y-a.y)
-# TODO: Consolidate this function into get_best_move(head, tail), and delete the Distance namedtuple
-
-
-def get_best_move(tail: Location, distance: Distance) -> Move:
-    """Returns the Move that makes `tail` adjacent to `head`."""
-    delta_x, delta_y = distance.x, distance.y # 2, -2
+def get_best_move(a: Location, b: Location) -> Move:
+    """Returns the Move that makes `a` adjacent to `b`."""
+    distance = (b.x - a.x, b.y - a.y)
+    if -1 <= distance[0] <= 1 and -1 <= distance[1] <= 1:
+        return Move(0, 0)
+    delta_x, delta_y = distance # 2, -2
     if delta_x < 0:
         delta_x = -1
     elif delta_x > 1:
@@ -66,22 +51,20 @@ def get_best_move(tail: Location, distance: Distance) -> Move:
 def main() -> int:
     with open(sys.argv[1], "r") as f:
         instructions = f.read()
-    size = get_board_size(instructions)
-    print_board(size, (4, 4))
     # Part 1
-    tail_locations = []
     head = Location(20, 20)
     tail = Location(20, 20)
+    tail_locations = [tail]
     for line in instructions.split("\n")[:-1]:
         moves: List[Move] = instruction_to_moves(line)
         for move in moves:
             head: Location = update_location(head, move)
-            distance: Distance = calculate_distance(tail, head)
-            if not (-1 <= distance[0] <= 1 and -1 <= distance[1] <= 1):
-                best_move: Move = get_best_move(tail, distance)
-                tail: Location = update_location(tail, best_move)
-                tail_locations += [tail]
-    print(len(set(tail_locations)))
+            best_move: Move = get_best_move(tail, head)
+            tail: Location = update_location(tail, best_move)
+            tail_locations += [tail]
+    answer = len(set(tail_locations))
+    print(answer)
+    assert answer == 6037
 
     return 0
 
