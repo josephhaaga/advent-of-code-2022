@@ -25,6 +25,8 @@ def main() -> int:
     def get_strength_at(y):
         return y * (strengths[y-1])
     print(sum([get_strength_at(x) for x in [20, 60, 100, 140, 180, 220]]))
+
+
     return 0
 
 
